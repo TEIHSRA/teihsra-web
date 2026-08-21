@@ -39,6 +39,25 @@ export const metadata: Metadata = {
   },
 };
 
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "TEIHSRA Health Intelligence",
+  alternateName: "TEIHSRA",
+  url: "https://teihsra.com",
+  email: "connect@teihsra.com",
+  description:
+    "Technology-Empowered Intelligence for Healthcare Systems, Research and Advancement.",
+  sameAs: [
+    "linkedin.com/company/teihsra",
+    "https://x.com/teihsra",
+    "https://www.instagram.com/teihsra",
+    "https://www.threads.com/@teihsra",
+    "https://www.youtube.com/@teihsra",
+    "https://github.com/TEIHSRA",
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -47,6 +66,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify(organizationSchema),
+  }}
+/>
         {children}
 
         {/* Google Analytics */}
