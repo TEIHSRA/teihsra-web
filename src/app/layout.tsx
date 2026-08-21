@@ -1,11 +1,22 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TEIHSRA Health Intelligence",
+  title: {
+    default: "TEIHSRA Health Intelligence",
+    template: "%s | TEIHSRA",
+  },
+
   description:
     "Technology-Empowered Intelligence for Healthcare Systems, Research and Advancement.",
+
   metadataBase: new URL("https://teihsra.com"),
+
+  alternates: {
+    canonical: "/",
+  },
+
   openGraph: {
     title: "TEIHSRA Health Intelligence",
     description:
@@ -13,6 +24,18 @@ export const metadata: Metadata = {
     url: "https://teihsra.com",
     siteName: "TEIHSRA Health Intelligence",
     type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "TEIHSRA Health Intelligence",
+    description:
+      "Technology-Empowered Intelligence for Healthcare Systems, Research and Advancement.",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
@@ -23,7 +46,24 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-KYEG98XYLE"
+          strategy="afterInteractive"
+        />
+
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-KYEG98XYLE');
+          `}
+        </Script>
+      </body>
     </html>
   );
 }
