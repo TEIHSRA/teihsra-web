@@ -153,15 +153,28 @@ export default function Home() {
       </section>
 
       <footer>
-        <div>© 2026 TEIHSRA Health Intelligence</div>
+  <div>© 2026 TEIHSRA Health Intelligence</div>
 
-        <div className="footer-right">
-          <span>Mumbai · India</span>
-          <a href="mailto:connect@teihsra.com">
-            connect@teihsra.com
-          </a>
-        </div>
-      </footer>
+  <div className="footer-right">
+    <span>Mumbai · India</span>
+
+    <a href="mailto:connect@teihsra.com">
+      connect@teihsra.com
+    </a>
+
+    <a href="/contact">
+      Contact
+    </a>
+
+    <a href="/privacy">
+      Privacy
+    </a>
+
+    <a href="/terms">
+      Terms
+    </a>
+  </div>
+</footer>
     </main>
   );
 }
