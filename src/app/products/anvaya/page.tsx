@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-
-type StoryStage = "admission" | "round" | "event" | "review" | "summary";
+import { useEffect, useMemo, useState } from "react";
 
 const PATIENTS = [
   { id: "rahul", name: "Rahul Patil", meta: "42 M · Bed 12", context: "POD 2 · Craniotomy", flag: "2 tasks" },
@@ -50,18 +48,9 @@ export default function AnvayaPage() {
   const [dragged, setDragged] = useState<string | null>(null);
   const [recording, setRecording] = useState(false);
   const [seconds, setSeconds] = useState(0);
-  const [storyStage, setStoryStage] = useState<StoryStage>("admission");
   const [summaryReady, setSummaryReady] = useState(false);
   const [summaryProgress, setSummaryProgress] = useState(0);
   const [showSources, setShowSources] = useState(false);
-
-  const stageRefs = {
-    admission: useRef<HTMLElement | null>(null),
-    round: useRef<HTMLElement | null>(null),
-    event: useRef<HTMLElement | null>(null),
-    review: useRef<HTMLElement | null>(null),
-    summary: useRef<HTMLElement | null>(null),
-  };
 
   const formatted = useMemo(() => {
     const m = Math.floor(seconds / 60).toString().padStart(2, "0");
@@ -76,23 +65,6 @@ export default function AnvayaPage() {
   }, [recording]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-
-        if (!visible) return;
-        const stage = visible.target.getAttribute("data-stage") as StoryStage | null;
-        if (stage) setStoryStage(stage);
-      },
-      { threshold: [0.28, 0.45, 0.65] }
-    );
-
-    Object.values(stageRefs).forEach((ref) => {
-      if (ref.current) observer.observe(ref.current);
-    });
-
     const revealObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -105,7 +77,6 @@ export default function AnvayaPage() {
     document.querySelectorAll("[data-reveal]").forEach((node) => revealObserver.observe(node));
 
     return () => {
-      observer.disconnect();
       revealObserver.disconnect();
     };
   }, []);
@@ -164,22 +135,8 @@ export default function AnvayaPage() {
         </a>
       </header>
 
-      <aside className="story-thread" aria-label="Anvaya story progress">
-        {[
-          ["admission", "Open"],
-          ["round", "Round"],
-          ["event", "Record"],
-          ["review", "Review"],
-          ["summary", "Summary"],
-        ].map(([id, label]) => (
-          <a key={id} className={storyStage === id ? "active" : ""} href={`#${id}`}>
-            <span />
-            <small>{label}</small>
-          </a>
-        ))}
-      </aside>
 
-      <section id="top" className="hero" ref={stageRefs.admission} data-stage="admission">
+      <section id="top" className="hero">
         <div className="hero-copy" data-reveal>
           <span className="eyebrow">Clinical Documentation Intelligence</span>
           <h1>
@@ -308,7 +265,7 @@ export default function AnvayaPage() {
         </div>
       </section>
 
-      <section id="round" className="round-story" ref={stageRefs.round} data-stage="round">
+      <section id="round" className="round-story">
         <div className="round-copy" data-reveal>
           <span className="section-label">01 / ROUNDS</span>
           <h2>
@@ -361,7 +318,7 @@ export default function AnvayaPage() {
         </div>
       </section>
 
-      <section id="record" className="record-story" ref={stageRefs.event} data-stage="event">
+      <section id="record" className="record-story">
         <div className="record-phone-wrap" data-reveal>
           <div className="phone">
             <div className="phone-notch" />
@@ -476,7 +433,7 @@ export default function AnvayaPage() {
         </div>
       </section>
 
-      <section id="review" className="review-story" ref={stageRefs.review} data-stage="review">
+      <section id="review" className="review-story">
         <div className="review-copy" data-reveal>
           <span className="section-label">04 / CONSULTANT REVIEW</span>
           <h2>
@@ -518,7 +475,7 @@ export default function AnvayaPage() {
         </div>
       </section>
 
-      <section className="wow-section" ref={stageRefs.summary} data-stage="summary">
+      <section className="wow-section">
         <div className="wow-copy" data-reveal>
           <span>Eight days of admission.</span>
           <h2>Already documented.</h2>
@@ -838,36 +795,6 @@ export default function AnvayaPage() {
         .quiet-cta:hover{ transform:translateY(-2px); background:#fffdf8; }
         .quiet-cta svg{ width:16px; }
 
-        .story-thread {
-          position:fixed;
-          z-index:15;
-          left:20px;
-          top:50%;
-          transform:translateY(-50%);
-          display:grid;
-          gap:15px;
-        }
-        .story-thread a {
-          display:grid;
-          grid-template-columns:10px auto;
-          align-items:center;
-          gap:8px;
-          color:#a1a59f;
-        }
-        .story-thread a > span {
-          width:6px; height:6px; border-radius:50%; background:#bbbeb9; transition:all .25s ease;
-        }
-        .story-thread small {
-          font-size:7px;
-          letter-spacing:.1em;
-          text-transform:uppercase;
-          opacity:0;
-          transform:translateX(-6px);
-          transition:all .25s ease;
-        }
-        .story-thread a.active { color:var(--ink); }
-        .story-thread a.active > span { background:var(--ox); box-shadow:0 0 0 5px rgba(167,92,84,.1); }
-        .story-thread a.active small { opacity:1; transform:none; }
 
         .hero {
           width:min(1420px, calc(100% - 56px));
@@ -1605,7 +1532,6 @@ export default function AnvayaPage() {
 
         @media (max-width:760px){
           .topbar,.hero,.editorial-intro{ width:min(100% - 32px,1420px); }
-          .story-thread{ display:none; }
           .quiet-cta{ padding:9px 11px; }
           .quiet-cta svg{ display:none; }
 
